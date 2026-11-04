@@ -1,0 +1,27 @@
+{
+  "name": "clif---cli-codding-assistant",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "bin": {
+    "clif": "./index.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "dependencies": {
+    "@langchain/core": "^1.3.4",
+    "@langchain/groq": "^1.3.1",
+    "axios": "^1.21.0",
+    "chalk": "^6.0.1",
+    "dotenv": "^18.0.9",
+    "langchain": "^1.6.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  }
+}
