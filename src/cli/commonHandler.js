@@ -18,6 +18,8 @@ export async function commonHandler(userInput) {
         case "/changemodel":
             await changeModelCommand();
             break;
+        case "/exit":
+            process.exit(0);
         default:
             console.log("Invalid command. Type /help for a list of available commands.");
             break;

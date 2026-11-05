@@ -1,5 +1,11 @@
 import axios from "axios";
 
+const CHAT_MODELS = new Set([
+    "openai/gpt-oss-120b",
+    "openai/gpt-oss-20b",
+    "llama-3.3-70b-versatile",
+    "llama-3.1-8b-instant"
+]);
 
 /**
  * @description Get all the models offfered by groq API Key
@@ -15,7 +21,7 @@ export async function getAllAIModels(apiKey) {
                 Authorization: `Bearer ${apiKey}`
             }
         });
-        return response.data.data.map(({ id, owned_by }) => ({ id, owned_by }))
+        return response.data.data.filter((model) => model.active && CHAT_MODELS.has(model.id)).map(({ id, owned_by }) => ({ id, owned_by }));
     } catch (error) {
         if (error.response?.status === 401) {
             throw new Error("Invalid or Expired Groq API Key")

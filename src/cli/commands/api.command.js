@@ -1,6 +1,6 @@
 import { groqManager } from "../../providers/groq.models.js";
 import { validateApiKey } from "../../providers/groq.service.js";
-import { addApiKey } from "../../utils/file.utils.js";
+import { settingsFileManager } from "../../utils/file.utils.js";
 import rl from "../../utils/readline.utils.js";
 
 /**
@@ -18,13 +18,12 @@ export async function changeApiCommand() {
         const isValidApi = await validateApiKey(userInput);
 
         if (!isValidApi) {
-            userInput = await rl.question("Please enter your valid Groq API Key = ");
             console.log("Invalid or Expired Groq API Key. Please try again.");
             continue;
         }
 
-        await addApiKey(userInput);
-        groqManager.changeApiKey(userInput)
+        await settingsFileManager.save("apiKey", userInput);
+        groqManager.changeApiKey(userInput);
         break;
     }
 

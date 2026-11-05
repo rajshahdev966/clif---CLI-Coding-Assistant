@@ -6,11 +6,11 @@ class GroqManager{
     #llm;
 
     initialise(apiKey, aiModel){
-        if (!apiKey || !aiModel) {
+        if (typeof apiKey !== "string" || typeof aiModel !== "string" || !apiKey.trim() || !aiModel.trim()) {
             throw new Error("API key and model are required.");
         }
-        this.#aiModel = aiModel;
-        this.#apiKey = apiKey; 
+        this.#aiModel = aiModel.trim();
+        this.#apiKey = apiKey.trim(); 
         this.#createLLM()
     }
 
@@ -22,18 +22,18 @@ class GroqManager{
     }
 
     changeApiKey(apiKey){
-        if(!apiKey){
+        if(typeof apiKey !== "string" || !apiKey.trim()){
             throw new Error("API key is required")
         }
-        this.#apiKey = apiKey;
+        this.#apiKey = apiKey.trim();
         this.#createLLM()
     }
 
     changeAiModel(aiModel){
-        if(!aiModel){
+        if(typeof aiModel !== "string" || !aiModel.trim()){
             throw new Error("AI Model is required")
         }
-        this.#aiModel = aiModel;
+        this.#aiModel = aiModel.trim();
         this.#createLLM()
     }
 

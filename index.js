@@ -62,7 +62,7 @@ export function showWelcome({ model, version = "0.1.0" }) {
 //   console.log(muted("  /help  /model  /clear  /exit"));
 
 
-main()
+  main()
 }
 
 
