@@ -1,5 +1,6 @@
 
-import { commonHandler } from "./cli/commonHandler.js";
+import { commandHandler} from "./cli/commandHandler.js";
+import { initGraph } from "./graphs/graph.js";
 import { groqManager } from "./providers/groq.models.js";
 import { getAllAIModels, validateApiKey } from "./providers/groq.service.js";
 import { settingsFileManager } from "./utils/file.utils.js";
@@ -62,19 +63,21 @@ export async function main() {
 
     groqManager.initialise(settingsFileManager.get("apiKey")?.trim(), settingsFileManager.get("aiModel")?.trim())
 
-    while (true) {
-        const userInput = (await rl.question("Enter your query: ")).trim();
+    // while (true) {
+    //     const userInput = (await rl.question("Enter your query: ")).trim();
 
-        if (userInput.startsWith("/")) {
-            await commonHandler(userInput)
-            continue;
-        }
-        const stream = await groqManager.getLLM().stream(userInput);
+    //     if (userInput.startsWith("/")) {
+    //         await commandHandler(userInput)
+    //         continue;
+    //     }
+    //     const stream = await groqManager.getLLM().stream(userInput);
 
-        for await (const chunk of stream) {
-            process.stdout.write(chunk.content);
-        }
-        process.stdout.write("\n");
-    }
+    //     for await (const chunk of stream) {
+    //         process.stdout.write(chunk.content);
+    //     }
+    //     process.stdout.write("\n");
+    // }
+
+    await initGraph()
 
 }

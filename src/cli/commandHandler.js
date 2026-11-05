@@ -7,7 +7,7 @@ import { changeModelCommand } from "./commands/model.command.js";
  * @description Handle common commands => /help, /changeAPI, /changeModel
  * @param userInput 
  */
-export async function commonHandler(userInput) {
+export async function commandHandler(userInput) {
     switch(String(userInput).toLowerCase()){
         case "/help":
             helpCommand();
