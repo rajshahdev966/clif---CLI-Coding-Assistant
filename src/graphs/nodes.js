@@ -1,34 +1,34 @@
-import { ChatGroq } from "@langchain/groq";
+import { ToolNode } from "@langchain/langgraph/prebuilt";
+import { AIMessage } from "langchain"
+import { groqManager } from "../providers/groq.models.js";
+import { sayHello } from "../tools/tool.js";
 import { settingsFileManager } from "../utils/file.utils.js";
-import { AIMessage } from "langchain";
 
 
+const tools = [sayHello]
 
-export async function LLMNode(state, config){
+export const toolNode = new ToolNode(tools);
 
-    const model = new ChatGroq({
-        model: settingsFileManager.get("aiModel"),
-        apiKey: settingsFileManager.get("apiKey")
-    })
-
-
-    const stream = await model.stream(state.messages, config);
-    let aiMessages = "";
-
+export async function llmNode(state) {
+    const llm = groqManager
+        .getLLM()
+        .bindTools(tools, { tool_choice: "auto" });
+    const response = await llm.invoke(state.messages);
     process.stdout.write("[AI]: ")
+    let aiMessage = new AIMessage({ content: response.content });
 
-    for await(const chunk of stream){
-        process.stdout.write(chunk.text);
-        aiMessages += chunk.text
-    }
+    console.log("RES TEXT =>",response.text)
+    console.log("Tool calls:", response.tool_calls);
 
-    process.stdout.write("\n")
+    process.stdout.write("\n");
 
     return {
         messages: [
-            ...state.messages,
-            new AIMessage(aiMessages)
+            aiMessage
         ]
-    };
-
+    }
 }
+
+
+
+
