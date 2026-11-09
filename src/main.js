@@ -1,11 +1,12 @@
 
 import { HumanMessage } from "langchain";
-import { commandHandler} from "./cli/commandHandler.js";
+import { commandHandler } from "./cli/commandHandler.js";
 import { groqManager } from "./providers/groq.models.js";
 import { getAllAIModels, validateApiKey } from "./providers/groq.service.js";
 import { settingsFileManager } from "./utils/file.utils.js";
 import rl from "./utils/readline.utils.js";
 import graph from "./graphs/graph.js";
+import { diffTest } from "./utils/diff.utils.js";
 
 
 export async function main() {
@@ -13,25 +14,33 @@ export async function main() {
     await settingsFileManager.load()
 
     //Loop to get the valid API key from the user
+    let inputForApiKey = settingsFileManager.get("apiKey")?.trim();
     while (true) {
-        let userInput = settingsFileManager.get("apiKey")?.trim();
-        if (!userInput) {
-            userInput = (await rl.question("Please enter your Groq API Key = ")).trim();
+        // let savedApiKey = settingsFileManager.get("apiKey")?.trim();
+        if (!inputForApiKey) {
+             let userInput = (await rl.question("Please enter your Groq API Key = ")).trim();
             if (!userInput) {
                 console.log("No API key provided. Please try again.");
                 continue;
             }
-
-            const isValidApi = await validateApiKey(userInput);
-            if (!isValidApi) {
-                console.log("Invalid or Expired Groq API Key. Please try again.");
+            inputForApiKey = userInput;
+        }
+        const isValidApi = await validateApiKey(inputForApiKey);
+        console.log("Maiiin chala")
+        if (!isValidApi) {
+            console.log("Invalid or Expired Groq API Key. Please try again.");
+            let userInput = (await rl.question("Please enter your Groq API Key = ")).trim();
+            if (!userInput) {
+                console.log("No API key provided. Please try again.");
                 continue;
             }
-
-            await settingsFileManager.save("apiKey", userInput);
-            break;
+            inputForApiKey = userInput;
+            continue;
         }
+
+        await settingsFileManager.save("apiKey", inputForApiKey);
         break;
+
     }
 
 
@@ -44,7 +53,7 @@ export async function main() {
         console.log("\nChoose your preferred AI model:");
 
         existingModels.forEach((model, index) => {
-            
+
             console.log(
                 `${index + 1}. ${model.id} (${model.owned_by})`
             );
@@ -65,6 +74,9 @@ export async function main() {
     groqManager.initialise(settingsFileManager.get("apiKey")?.trim(), settingsFileManager.get("aiModel")?.trim())
 
     while (true) {
+        console.log("////////////////////////////////////////////////////////////////////////////////////")
+        
+        console.log("////////////////////////////////////////////////////////////////////////////////////")
         const userInput = (await rl.question("Enter your query: ")).trim();
 
         if (userInput.startsWith("/")) {
@@ -72,7 +84,7 @@ export async function main() {
             continue;
         }
 
-        const response = await graph.invoke({messages: [new HumanMessage(userInput)]}, {configurable: {thread_id: "clif-main"}});
+        const response = await graph.invoke({ messages: [new HumanMessage(userInput)] }, { configurable: { thread_id: "clif-main" } });
 
     }
 

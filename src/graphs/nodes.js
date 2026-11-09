@@ -2,9 +2,10 @@ import { ToolNode } from "@langchain/langgraph/prebuilt";
 import { SystemMessage } from "langchain"
 import { groqManager } from "../providers/groq.models.js";
 import { readFiles } from "../tools/readFiles.tool.js";
+import { listFiles } from "../tools/listFiles.tool.js";
 
 
-const tools = [readFiles]
+const tools = [readFiles, listFiles]
 
 
 export async function llmNode(state) {
