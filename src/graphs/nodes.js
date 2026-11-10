@@ -3,9 +3,11 @@ import { SystemMessage } from "langchain"
 import { groqManager } from "../providers/groq.models.js";
 import { readFiles } from "../tools/readFiles.tool.js";
 import { listFiles } from "../tools/listFiles.tool.js";
+import { createNewFile } from "../tools/createNewFile.tool.js";
+import { editFile } from "../tools/editFile.tool.js";
 
 
-const tools = [readFiles, listFiles]
+const tools = [readFiles, listFiles, createNewFile, editFile]
 
 
 export async function llmNode(state) {

@@ -1,26 +1,38 @@
 import { tool } from "langchain"
 import * as z from "zod"
-import path from "path"
 import fs from "fs/promises"
+import { fetchOldFileContent, validateWorkspacePath } from "../utils/file.utils";
+import { replaceOccurence } from "../utils/text.utils";
+import { requestFileApproval } from "../utils/permission.utils";
 
-const editFile = tool(
+
+export const editFile = tool(
     async function ({ files }) {
 
         const responses = [];
 
         for (const file of files) {
             //Path Validation
-            const workspace = process.cwd()
+           const validWorkspacePath = await validateWorkspacePath(file.path)
 
-            const fullPath = path.resolve(workspace, file.path)
+            if (!String(validWorkspacePath).trim()) {
+                responses.push({
+                    path: file.path,
+                    status: "access denied"
+                })
+                continue;
+            }
 
-            const relativePath = path.relative(workspace, fullPath)
+            //Fetching existing content and saving updated content 
 
-            if (
-                relativePath === ".." ||
-                relativePath.startsWith(`..${path.sep}`) ||
-                path.isAbsolute(relativePath)
-            ) {
+            const oldContent = await fetchOldFileContent(validWorkspacePath)
+
+            const updatedContent = replaceOccurence(oldContent, file.index, file.oldText, file.newText)
+            //Showing diff to the user 
+
+            const isChangeVerified = await requestFileApproval(validWorkspacePath, oldContent, updatedContent)
+
+            if(!isChangeVerified){
                 responses.push({
                     path: file.path,
                     status: "access denied"
@@ -29,51 +41,9 @@ const editFile = tool(
                 continue;
             }
 
-            //Fetching existing content and saving updated content 
-
-            const oldContent = fs.readFile(fullPath, "utf-8");
-            const parts = String(oldContent).split(oldText);
-            let index = file.index;
-
-            let updatedContent = "";
-
-            for (let i = 0; i < parts.length; i++) {
-                updatedContent += (index === i ? file.newText : file.oldText) + parts[i]
-            }
-
-            //Showing diff to the user 
-
-            console.log("Changes (Y => YES, N => NO)");
-            const patch = diffPatch(fullPath, oldContent, updatedContent);
-            console.log(patch);
-            let userInput = (await rl.question("[USER]: (Y / N)")).trim().toLowerCase()
-
-            //Verification to avoid time-of-check and time-of-use error
-            const isValid = (oldText.match(await fs.readFile(fullPath, "utf-8")))
-
-            if (!isValid) {
-                responses.push({
-                    path: file.path,
-                    status: "user changed the code in between"
-                })
-
-                continue;
-            }
-
-
-            if (userInput !== "y") {
-                responses.push({
-                    path: file.path,
-                    status: "rejected"
-                })
-                continue;
-            }
-
-
-
 
             try {
-                await fs.writeFile(fullPath, updatedContent)
+                await fs.writeFile(validWorkspacePath, updatedContent)
 
                 responses.push({
                     path: file.path,
@@ -100,7 +70,7 @@ const editFile = tool(
     },
     {
         name: "editFile",
-        description: "Edit UTF-8 text files within the current workspace by replacing a specified occurrence of exact text. The index is zero-based and refers to matching occurrences, not line numbers. Use -1 to append content.",
+        description: "Edit/Update specific lines of a file. Provide relative paths and provide zero based indexing",
         schema: z.object({
             files: z.array(z.object({
                 path: z.string().describe("File path of the file to be edited"),

@@ -1,5 +1,7 @@
+import { path } from "path"
 import fs from "fs/promises"
 import { CONFIG_DIR, SETTINGS_FILE_PATH } from "./constant.js"
+
 
 class SettingsFileManager {
     #settings = {}
@@ -48,3 +50,43 @@ class SettingsFileManager {
 
 
 export const settingsFileManager = new SettingsFileManager()
+
+
+
+export async function validateWorkspacePath(userRelativePath) {
+    if (
+        typeof userRelativePath !== "string" ||
+        !userRelativePath.trim() ||
+        path.isAbsolute(userRelativePath)
+    ) {
+        return "";
+    }
+
+    const fullPath = path.resolve(process.cwd(), userRelativePath);
+
+    const relativePath = path.relative(process.cwd(), fullPath);
+
+    if (
+        relativePath === ".." ||
+        relativePath.startsWith(`..${path.sep}`) ||
+        path.isAbsolute(relativePath)
+    ) {
+        return ""
+    }
+    return fullPath
+}
+
+export async function fetchOldFileContent(fullPath) {
+    let oldText = "";
+    try {
+        await fs.access(fullPath);
+        oldText = await fs.readFile(fullPath, "utf-8");
+    } catch (error) {
+        if (error.code !== "ENOENT") {
+            throw error;
+        }
+        oldText = ""
+    }
+
+    return oldText
+} 
