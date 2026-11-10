@@ -53,7 +53,17 @@ const createNewFile = tool(
             let userInput = (await rl.question("[USER]: (Y / N)")).trim().toLowerCase()
 
 
-            //Verify the choices of user
+            //Verification to avoid time-of-check and time-of-use error
+            const isValid = (oldText.match(await fs.readFile(fullPath, "utf-8")))
+
+            if(!isValid){
+                responses.push({
+                    path: file.path,
+                    status: "user changed the code in between"
+                })
+
+                continue;
+            }
 
             //If user answers No
             if (userInput !== "y") {
