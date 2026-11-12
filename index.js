@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import { readFileSync } from "node:fs";
 import { main } from "./src/main.js";
 import { ui } from "./src/ui/terminal.js";

@@ -1,18 +1,34 @@
 {
-  "name": "clif---cli-codding-assistant",
+  "name": "cliff-ai",
   "version": "1.0.0",
-  "description": "",
+  "description": "CLIFF — An AI-powered terminal coding assistant. The edge is yours.",
   "main": "index.js",
   "bin": {
-    "clif": "./index.js"
+    "cliff": "./index.js"
   },
   "scripts": {
     "test": "node --test tests/ui.test.js",
     "preview:ui": "node scripts/preview-ui.js"
   },
-  "keywords": [],
+  "engines": {
+    "node": ">=20"
+  },
+  "files": [
+    "src/",
+    "README.md",
+    "LICENSE"
+  ],
+  "keywords": [ 
+    "cliff",
+    "ai",
+    "coding-assistant",
+    "cli",
+    "langchain",
+    "langgraph",
+    "groq"
+  ],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "type": "module",
   "dependencies": {
     "@langchain/core": "^1.3.4",

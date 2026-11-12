@@ -39,87 +39,66 @@ A terminal-first AI coding assistant built with **Node.js, Groq, LangChain, and 
 
 ### A quick look at the workflow
 
-```text
-$ cliff
-
-  CLIFF.
-  THE EDGE IS YOURS.
-
-  > Read calculator.js and add input validation to multiply().
-
-  ◇ Reading calculator.js
-  ◇ Preparing an edit
-
-  Proposed changes: calculator.js
-  ─────────────────────────────────────────
-  - return a * b;
-  + if (typeof a !== "number" || typeof b !== "number") {
-  +   throw new TypeError("Expected numbers");
-  + }
-  + return a * b;
-
-  Apply this change? [y/N] y
-  ✓ File updated
-```
+![CLI Screenshot](https://ik.imagekit.io/hqhsgjeub/clif/image.png)
 
 <sub>Illustrative terminal session; exact visual output depends on the current CLI UI.</sub>
 
-## 🚀 Getting started
+
+## 🚀 Getting Started
 
 ### Prerequisites
 
-- A recent Node.js version and npm
-- A [Groq API key](https://console.groq.com/keys)
-- A terminal and a project folder to work in
+- **Node.js** (v20 or later recommended)
+- A free [Groq API Key](https://console.groq.com/keys)
+- A terminal and a project to work on
 
-### 1. Clone and install
+### 1. Install CLIFF
 
-```bash
-git clone <YOUR_REPOSITORY_URL>
-cd <YOUR_REPOSITORY_FOLDER>
-npm install
-```
-
-### 2. Link CLIFF as a local CLI command
+Install globally using npm:
 
 ```bash
-npm link
+npm install -g cliff-ai
 ```
 
-This makes the CLI command available globally **on your machine** from the local repository. It does not publish CLIFF to npm.
+Or run directly without installing:
 
-### 3. Open the project you want to work on
+```bash
+npx cliff-ai
+```
+
+### 2. Launch CLIFF
+
+Navigate to your project directory and start CLIFF:
 
 ```bash
 cd path/to/your/project
 cliff
 ```
 
-On first launch, follow CLIFF's setup prompts to configure your Groq API key and model. Configuration is stored locally in CLIFF's settings file.
+On your first launch, CLIFF will guide you through configuring your **Groq API key** and selecting an AI model.
 
 > [!IMPORTANT]
-> Run CLIFF **inside the project directory** you intend to work on. CLIFF uses the current working directory as its workspace. Review every proposed write before approving it, and avoid using real secrets or irreplaceable files while testing.
+> Always launch CLIFF **inside your project directory**. CLIFF treats the current working directory as its workspace. Review file modifications before approving them.
 
-### Try these prompts
+### 3. Start Building ✨
 
-```text
-Read README.md and summarize the project's structure.
-```
+Try asking CLIFF:
 
 ```text
-Create a utils.js file with a function that validates an email address.
+> Read README.md and explain this project.
+
+> Create a utils.js file with an email validation function.
+
+> Update the multiply function in calculator.js to handle invalid inputs.
+
+> List all files and identify the project's entry point.
 ```
 
-```text
-Read calculator.js and update only the multiply function to reject non-number inputs.
-```
+### 🔗 Useful Links
 
-```text
-List the files in the current directory and tell me where the entry point might be.
-```
+[![npm](https://img.shields.io/npm/v/cliff-ai?style=for-the-badge&logo=npm&logoColor=white&color=CB3837)](https://www.npmjs.com/package/cliff-ai)
 
-> [!NOTE]
-> Available slash commands and model names can depend on your current CLIFF build. Use the in-app help command, if available, for the authoritative list.
+> **CLIFF v1** focuses on reading, creating, and updating project files with AI-powered assistance and user-controlled approvals.
 
 ## 🧰 Tech stack
 
