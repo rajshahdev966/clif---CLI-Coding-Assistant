@@ -1,6 +1,6 @@
 {
   "name": "cliff-ai",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "CLIFF — An AI-powered terminal coding assistant. The edge is yours.",
   "main": "index.js",
   "bin": {
@@ -18,7 +18,7 @@
     "README.md",
     "LICENSE"
   ],
-  "keywords": [ 
+  "keywords": [
     "cliff",
     "ai",
     "coding-assistant",
