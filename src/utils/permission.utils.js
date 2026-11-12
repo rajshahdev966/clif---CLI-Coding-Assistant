@@ -1,23 +1,39 @@
-import { diffPatch } from "./diff.utils";
-import rl from "./readline.utils";
+import { diffPatch } from "./diff.utils.js";
+import { fetchFileContent } from "./file.utils.js";
+import rl from "./readline.utils.js";
 import fs from "fs/promises"
+import { ui } from "../ui/terminal.js";
 
 
 
 export async function requestFileApproval(fullPath, oldContent, updatedContent) {
-
-    console.log("Changes (Y => YES, N => NO)");
     const patch = diffPatch(fullPath, oldContent, updatedContent);
-    console.log(patch);
-    let userInput = (await rl.question("[USER]: (Y / N)")).trim().toLowerCase()
+    ui.diff(fullPath, patch);
+    let userInput = (await ui.question(rl, "approval")).trim().toLowerCase()
 
     //Verification to avoid time-of-check and time-of-use error
-    let isVerified = (oldText.match(await fs.readFile(fullPath, "utf-8")))
-
+    
     if (userInput !== "y") {
-        isVerified = false;
+        ui.warn("Change declined. File left unchanged.");
+        return {
+            isApproved: false,
+            status: "rejected"
+        }
+    }
+    
+    const currentContent = await fetchFileContent(fullPath)
+
+    if (oldContent !== currentContent) {
+        ui.warn("File changed while you reviewed it. This change was not applied.");
+        return {
+            isApproved: false,
+            status: "conflict"
+        }
     }
 
-    return isVerified;
+    return {
+        isApproved: true,
+        status: "success" 
+    }
 
 }

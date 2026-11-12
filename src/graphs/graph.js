@@ -1,5 +1,4 @@
 import { StateGraph, START, END, MemorySaver, MessagesAnnotation } from "@langchain/langgraph"
-import * as z from "zod"
 import { toolsCondition } from "@langchain/langgraph/prebuilt";
 import { llmNode, toolNode } from "./nodes.js";
 

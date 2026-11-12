@@ -1,6 +1,7 @@
 import { changeApiCommand } from "./commands/api.command.js";
 import { helpCommand } from "./commands/help.command.js";
 import { changeModelCommand } from "./commands/model.command.js";
+import { ui } from "../ui/terminal.js";
 
 
 /**
@@ -19,9 +20,10 @@ export async function commandHandler(userInput) {
             await changeModelCommand();
             break;
         case "/exit":
+            ui.goodbye();
             process.exit(0);
         default:
-            console.log("Invalid command. Type /help for a list of available commands.");
+            ui.warn("Unknown command. Type /help to see your commands.");
             break;
     }
 }

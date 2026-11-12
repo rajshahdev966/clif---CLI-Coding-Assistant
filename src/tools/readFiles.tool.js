@@ -2,6 +2,7 @@ import { tool } from "langchain"
 import fs from "fs/promises"
 import * as z from "zod"
 import path from "path"
+import { ui } from "../ui/terminal.js";
 
 export const readFiles = tool(
     async ({ paths }) => {
@@ -32,7 +33,7 @@ export const readFiles = tool(
             }
         }))
 
-        console.log("HIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII=> ",await fs.readdir(process.cwd(), { withFileTypes: true }))
+        ui.toolResults("Read", contentArray);
 
 
         return JSON.stringify({

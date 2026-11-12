@@ -2,6 +2,7 @@ import { tool } from "langchain"
 import path from "path"
 import fs from "fs/promises"
 import * as z from "zod"
+import { ui } from "../ui/terminal.js";
 
 export const listFiles = tool(
     async ({ paths }) => {
@@ -39,6 +40,7 @@ export const listFiles = tool(
 
             }
         }))
+        ui.toolResults("List", dirArray);
         return JSON.stringify({
             directories: dirArray
         })
@@ -48,7 +50,9 @@ export const listFiles = tool(
         name: "listFiles",
         description: "List the directory, folder structure with file types of current directory",
         schema: z.object({
-            paths: z.array(z.string().describe("Relative path of the file to read").min(1, "Atlleast one file path is required").default(["."]))
+            paths: z.array(
+                z.string().min(1).describe("Relative directory path.")
+            ).min(1).default(["."])
         })
 
     }

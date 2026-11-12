@@ -17,7 +17,9 @@ class GroqManager{
     #createLLM(){
         this.#llm = new ChatGroq({
             apiKey: this.#apiKey,
-            model: this.#aiModel
+            model: this.#aiModel,
+            temperature: 0,
+            maxTokens: 2048,
         })
     }
 

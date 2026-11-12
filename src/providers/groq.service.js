@@ -14,7 +14,7 @@ const CHAT_MODELS = new Set([
  * @returns [{id, owned_by}] if successful 
  */
 
-export async function getAllAIModels(apiKey) {
+export async function getSupportedChatModels(apiKey) {
     try {
         const response = await axios.get("https://api.groq.com/openai/v1/models", {
             headers: {
@@ -38,7 +38,7 @@ export async function getAllAIModels(apiKey) {
  */
 export async function validateApiKey(apiKey) {
     try {
-        await getAllAIModels(apiKey);
+        await getSupportedChatModels(apiKey);
         return true;
     } catch (error) {
         if (error.message === "Invalid or Expired Groq API Key") {

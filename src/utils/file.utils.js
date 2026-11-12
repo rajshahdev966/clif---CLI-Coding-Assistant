@@ -1,4 +1,4 @@
-import { path } from "path"
+import path from "path"
 import fs from "fs/promises"
 import { CONFIG_DIR, SETTINGS_FILE_PATH } from "./constant.js"
 
@@ -76,17 +76,18 @@ export async function validateWorkspacePath(userRelativePath) {
     return fullPath
 }
 
-export async function fetchOldFileContent(fullPath) {
-    let oldText = "";
+export async function fetchFileContent(fullPath) {
+    let text = "";
     try {
         await fs.access(fullPath);
-        oldText = await fs.readFile(fullPath, "utf-8");
+        text = await fs.readFile(fullPath, "utf-8");
     } catch (error) {
         if (error.code !== "ENOENT") {
             throw error;
         }
-        oldText = ""
+        await fs.writeFile(fullPath, "")
+        text = ""
     }
 
-    return oldText
+    return text
 } 

@@ -1,7 +1,8 @@
-import { groqManager } from "../../providers/groq.models.js";
+import { groqManager } from "../../providers/groq.manager.js";
 import { validateApiKey } from "../../providers/groq.service.js";
 import { settingsFileManager } from "../../utils/file.utils.js";
 import rl from "../../utils/readline.utils.js";
+import { ui } from "../../ui/terminal.js";
 
 /**
  * @description Change API Key of llm on the requirement of user
@@ -10,20 +11,21 @@ import rl from "../../utils/readline.utils.js";
 
 export async function changeApiCommand() {
     while (true) {
-        let userInput = (await rl.question("Please enter your Groq API Key = ")).trim();
+        let userInput = (await ui.question(rl, "api")).trim();
         if (!userInput) {
-            console.log("No API key provided. Please try again.");
+            ui.warn("No API key provided. Please try again.");
             continue;
         }
-        const isValidApi = await validateApiKey(userInput);
+        const isValidApi = await ui.activity("Checking your Groq connection...", () => validateApiKey(userInput));
 
         if (!isValidApi) {
-            console.log("Invalid or Expired Groq API Key. Please try again.");
+            ui.error("Invalid or expired Groq API key. Please try again.");
             continue;
         }
 
         await settingsFileManager.save("apiKey", userInput);
         groqManager.changeApiKey(userInput);
+        ui.success("Groq API key updated.");
         break;
     }
 

@@ -1,6 +1,6 @@
 
 
-export function replaceOccurence(oldContent, index, oldText, newText) {
+export function replaceOccurrence(oldContent, index, oldText, newText) {
     if (index === -1) {
         return oldContent + newText;
     }
