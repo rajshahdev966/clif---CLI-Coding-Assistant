@@ -10,7 +10,7 @@ import { ui } from "../../ui/terminal.js";
  */
 
 export async function changeModelCommand() {
-    let existingModels = await ui.activity("Finding available models...", () => getAllAIModels(settingsFileManager.get("apiKey")));
+    let existingModels = await ui.activity("Finding available models...", () => getSupportedChatModels(settingsFileManager.get("apiKey")));
 
     ui.models(existingModels, groqManager.getAiModel());
 
